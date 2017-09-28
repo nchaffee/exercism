@@ -1,1 +1,3 @@
 **/.idea
+.rbenv-gemsets
+.rubocop_todo.yml

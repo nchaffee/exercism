@@ -1,13 +1,14 @@
 class Year
   class << self
-    def leap? year
-      (divisible_by(4, year) && !divisible_by(100, year)) || divisible_by(400, year)
+    def leap?(year)
+      @year = year
+      (divisible_by(4) && !divisible_by(100)) || divisible_by(400)
     end
 
     private
 
-    def divisible_by number, year
-      year % number == 0
+    def divisible_by(number)
+      (@year % number).zero?
     end
   end
 end

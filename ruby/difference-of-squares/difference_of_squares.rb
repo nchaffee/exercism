@@ -1,9 +1,9 @@
 # ruby version 2.3.1 ain't got sum method
 
 class Squares
-  def initialize highest_number
+  def initialize(highest_number)
     @numbers = (1..highest_number)
-    @squares = @numbers.map {|each_number| square_of(each_number)}
+    @squares = @numbers.map { |each_number| square_of(each_number) }
   end
 
   def difference

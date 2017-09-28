@@ -1,0 +1,6 @@
+# rubocop --auto-gen-config
+inherit_from: .rubocop_todo.yml
+AllCops:
+  Exclude:
+    - '**/*test.rb'
+

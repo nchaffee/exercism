@@ -1,5 +1,5 @@
 class Hamming
-  def self.compute strand, other_strand
+  def self.compute(strand, other_strand)
     raise ArgumentError if strand.length != other_strand.length
     distance = 0
     strand.length.times do |character_index|

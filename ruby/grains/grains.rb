@@ -1,11 +1,11 @@
 class Grains
-  def self.square number
-    raise ArgumentError unless (1..64).include? number
-    self.board[number]
+  def self.square(number)
+    raise ArgumentError unless (1..64).cover? number
+    board[number]
   end
 
   def self.total
-    self.board.inject(&:+)
+    board.inject(&:+)
   end
 
   def self.board

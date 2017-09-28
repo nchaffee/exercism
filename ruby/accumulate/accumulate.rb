@@ -9,10 +9,10 @@ class ArrayTest < Minitest::Test
 end
 
 module Accumulate
-  def accumulate &block
+  def accumulate
     return to_enum(__method__) { size } unless block_given?
     copy = dup
-    [].tap { |result| result.push yield(copy.shift) while copy.length > 0 }
+    [].tap { |result| result.push yield(copy.shift) until copy.empty? }
   end
 end
 

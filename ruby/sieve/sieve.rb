@@ -1,5 +1,5 @@
 class Sieve
-  def initialize limit
+  def initialize(limit)
     @limit = limit
     @composites = []
 
@@ -19,14 +19,14 @@ class Sieve
     end
   end
 
-  def mark_all_multiples_of number
+  def mark_all_multiples_of(number)
     multipliers_under_limit_for(number).each do |multiplier|
       multiple = number * multiplier
       mark(multiple)
     end
   end
 
-  def mark number
+  def mark(number)
     @composites << number unless already_marked?(number)
   end
 
@@ -34,7 +34,7 @@ class Sieve
     @composites.include? number
   end
 
-  def multipliers_under_limit_for number
+  def multipliers_under_limit_for(number)
     2..(@limit / number)
   end
 end

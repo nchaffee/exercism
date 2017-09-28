@@ -5,15 +5,15 @@ class MappedData < Array
     @number_stack = []
   end
 
-  def last_char? char
-    !!(last.char == char if last)
+  def last_char?(char)
+    last.char == char if last
   end
 
-  def encode_char char
+  def encode_char(char)
     last_char?(char) ? last.count += 1 : add_group(char)
   end
 
-  def decode_char char
+  def decode_char(char)
     if (0..9).to_a.map(&:to_s).include? char
       @number_stack << char
     else
@@ -22,16 +22,26 @@ class MappedData < Array
     end
   end
 
-  def add_group char, count = 1
+  def add_group(char, count = 1)
     push(CharacterGroup.new(char: char, count: count)) unless char.empty?
   end
 
   def encoded
-    empty? ? '' : map{|group| "#{group.count if group.count > 1}#{group.char}"}.join("")
+    if empty?
+      ''
+    else
+      map do |group|
+        "#{group.count if group.count > 1}#{group.char}"
+      end.join('')
+    end
   end
 
   def decoded
-    empty? ? '' : map{|group| group.char * group.count }.join('')
+    if empty?
+      ''
+    else
+      map { |group| group.char * group.count }.join('')
+    end
   end
 end
 
@@ -39,13 +49,13 @@ class CharacterGroup < OpenStruct
 end
 
 class RunLengthEncoding
-  def self.encode original_data
+  def self.encode(original_data)
     mapped_data = MappedData.new
     original_data.chars.each { |char| mapped_data.encode_char(char) }
     mapped_data.encoded
   end
 
-  def self.decode encoded_data
+  def self.decode(encoded_data)
     mapped_data = MappedData.new
     encoded_data.chars.each { |char| mapped_data.decode_char(char) }
     mapped_data.decoded
