@@ -6,9 +6,8 @@ class Series
 
   def slices(length)
     raise ArgumentError if length > @length
-    (0..@length).inject([]) do |result, index|
-      slice = @numbers.slice(index..-1).slice(0, length)
-      slice.length == length ? result << slice : result
-    end
+    (0..@length)
+        .map { |index| @numbers[index, length] }
+        .reject{ |slice| slice.length != length}
   end
 end
