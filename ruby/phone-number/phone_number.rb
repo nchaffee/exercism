@@ -3,16 +3,22 @@ class PhoneNumber
   ALLOWED_DIGITS = ('0'..'10').freeze
 
   def self.clean(submitted_number)
-    cleaned_number = submitted_number
+    phone_number = submitted_number
                      .chars
                      .select { |digit| ALLOWED_DIGITS.include?(digit) }
                      .join
-    cleaned_number[0] = '' if cleaned_number[0] == '1'
+    phone_number[0] = '' if phone_number[0] == '1'
 
-    valid_size = cleaned_number.size == 10
-    valid_exchange_code = ALLOWED_EXCHANGE_DIGITS.include?(cleaned_number[3])
+    Validator.validate(phone_number)
+  end
 
-    valid_size && valid_exchange_code ? cleaned_number : nil
+  class Validator
+    def self.validate(phone_number)
+      valid_size = phone_number.size == 10
+      valid_exchange_code = ALLOWED_EXCHANGE_DIGITS.include?(phone_number[3])
+
+      valid_size && valid_exchange_code ? phone_number : nil
+    end
   end
 end
 
