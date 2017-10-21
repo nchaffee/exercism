@@ -1,16 +1,10 @@
 module Strain
+  def keep
+    select { |element| yield(element) }
+  end
+
   def discard(&block)
-    assert(false, &block)
-  end
-
-  def keep(&block)
-    assert(true, &block)
-  end
-
-  private
-
-  def assert(true_or_false)
-    select { |element| yield(element) == true_or_false }
+    reject { |element| keep(&block).include?(element) }
   end
 end
 
