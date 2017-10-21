@@ -3,8 +3,8 @@ module Strain
     select { |element| yield(element) }
   end
 
-  def discard(&block)
-    reject { |element| keep(&block).include?(element) }
+  def discard
+    reject { |element| yield(element) }
   end
 end
 
