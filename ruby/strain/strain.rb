@@ -10,9 +10,7 @@ module Strain
   private
 
   def assert(true_or_false)
-    each_with_object(dup) do |element, memo|
-      memo.delete(element) unless (yield(element)) == true_or_false
-    end
+    select { |element| yield(element) == true_or_false }
   end
 end
 
