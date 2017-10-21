@@ -1,4 +1,4 @@
-class Array
+module Strain
   def discard(&block)
     assert(false, &block)
   end
@@ -10,9 +10,12 @@ class Array
   private
 
   def assert(true_or_false)
-    inject([]) do |memo, element|
-      memo << element if (yield(element)) == true_or_false
-      memo
+    each_with_object(dup) do |element, memo|
+      memo.delete(element) unless (yield(element)) == true_or_false
     end
   end
+end
+
+class Array
+  include Strain
 end
