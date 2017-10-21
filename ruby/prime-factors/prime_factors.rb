@@ -1,15 +1,17 @@
+class Integer
+  def divisible_by?(number)
+    modulo(number).zero?
+  end
+end
+
 class PrimeFactors
   def self.for(number)
-    result = []
-    factor = 2
-    while number > 1 do
-      if (number % factor).zero?
-        result << factor
-        number = number / factor
-      else
-        factor += 1
-      end
+    (number == 1) ? [] : factors(number)
+  end
+
+  def self.factors(number)
+    (2..number).each do |factor|
+      return (self.for(number / factor).unshift(factor)).flatten if number.divisible_by?(factor)
     end
-    result
   end
 end
