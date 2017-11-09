@@ -1,10 +1,10 @@
 class Trinary
-  VALID_SYMBOLS = [0, 1, 2].freeze
+  VALID_SYMBOLS = ['0', '1', '2'].freeze
 
   def initialize symbols
-    @symbols = symbols.chars.all? { |symbol| VALID_SYMBOLS.include?(symbol.to_i) } ? symbols.chars.map(&:to_i) : []
+    @symbols = symbols.chars.all? { |symbol| VALID_SYMBOLS.include?(symbol) } ? symbols.chars.map(&:to_i) : []
     @values = []
-    next_value_from(@symbols.dup)
+    next_value_from(@symbols) if @symbols.any?
   end
 
   def to_decimal
