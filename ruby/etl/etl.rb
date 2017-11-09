@@ -1,8 +1,7 @@
 class ETL
   def self.transform points_n_letters
-    points_n_letters.inject({}) do |memo, (points, letters)|
+    points_n_letters.each_with_object({}) do |(points, letters), memo|
       letters.each { |letter| memo[letter.downcase] = points }
-      memo
     end
   end
 end
