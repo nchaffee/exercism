@@ -156,26 +156,26 @@ class BowlingTest < Minitest::Test
     end
   end
 
-  # def test_bonus_rolls_for_a_strike_in_the_last_frame_must_be_rolled_before_score_can_be_calculated
-  #   record([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10])
-  #   assert_raises Game::BowlingError do
-  #     @game.score
-  #   end
-  # end
-  #
-  # def test_both_bonus_rolls_for_a_strike_in_the_last_frame_must_be_rolled_before_score_can_be_calculated
-  #   record([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10])
-  #   assert_raises Game::BowlingError do
-  #     @game.score
-  #   end
-  # end
-  #
-  # def test_bonus_roll_for_a_spare_in_the_last_frame_must_be_rolled_before_score_can_be_calculated
-  #   record([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 3])
-  #   assert_raises Game::BowlingError do
-  #     @game.score
-  #   end
-  # end
+  def test_bonus_rolls_for_a_strike_in_the_last_frame_must_be_rolled_before_score_can_be_calculated
+    record([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10])
+    assert_raises Game::BowlingError do
+      @game.score
+    end
+  end
+
+  def test_both_bonus_rolls_for_a_strike_in_the_last_frame_must_be_rolled_before_score_can_be_calculated
+    record([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10])
+    assert_raises Game::BowlingError do
+      @game.score
+    end
+  end
+
+  def test_bonus_roll_for_a_spare_in_the_last_frame_must_be_rolled_before_score_can_be_calculated
+    record([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 3])
+    assert_raises Game::BowlingError do
+      @game.score
+    end
+  end
 
   # Problems in exercism evolve over time, as we find better ways to ask
   # questions.
