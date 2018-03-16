@@ -3,12 +3,14 @@ defmodule NucleotideCount do
 
   @spec count([char], char) :: non_neg_integer
   def count(strand, nucleotide) do
-    Enum.count(strand, fn(dna) -> dna == nucleotide end)
+    strand
+    |> Enum.count(fn(dna) -> dna == nucleotide end)
   end
 
   @spec histogram([char]) :: map
   def histogram(strand) do
-    Enum.map(@nucleotides, fn(nucleotide) -> [nucleotide, count(strand, nucleotide)] end)
-    |> Map.new(fn([k,v]) -> {k,v} end)
+    @nucleotides
+    |> Enum.map(fn(nucleotide) -> {nucleotide, count(strand, nucleotide)} end)
+    |> Map.new
   end
 end
