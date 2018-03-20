@@ -13,13 +13,6 @@ defmodule SecretHandshake do
 
   10000 = Reverse the order of the operations in the secret handshake
   """
-  @events %{
-    1 => "wink",
-    10 => "double blink",
-    100 => "close your eyes",
-    1000 => "jump",
-    10000 => "reverse"
-  }
 
   def commands(0), do: []
   def commands(number) do
@@ -44,5 +37,10 @@ defmodule SecretHandshake do
   end
 
   defp event_for_bit({0, index}), do: nil
-  defp event_for_bit({1, index}), do: @events[:math.pow(10,index) |> round]
+  defp event_for_bit({_, 0}), do: "wink"
+  defp event_for_bit({_, 1}), do: "double blink"
+  defp event_for_bit({_, 2}), do: "close your eyes"
+  defp event_for_bit({_, 3}), do: "jump"
+  defp event_for_bit({_, 4}), do: "reverse"
+  defp event_for_bit({_, _}), do: nil
 end
