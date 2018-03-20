@@ -21,32 +21,28 @@ defmodule SecretHandshake do
     10000 => "reverse"
   }
 
-  def commands(0) do
-    []
-  end
-
+  def commands(0), do: []
   def commands(number) do
-    digits = Integer.digits number,2
-    result = add_commands_for(digits) |> Enum.filter(&(!is_nil(&1)))
+    digits = Integer.digits(number,2)
+    |> Enum.reverse
+    |> Enum.with_index
 
-    case result do
-      r when r == [] -> result
-      r when hd(r) == "reverse" -> tl(result)
-      _ -> Enum.reverse result
+    result = add_commands_for(digits)
+    |> Enum.filter(&(!is_nil(&1)))
+
+    if List.last(result) == "reverse" do
+      result = Enum.reverse(result -- ["reverse"])
     end
+    result
   end
 
   defp add_commands_for(digits) do
     case length(digits) do
-      1 -> [event_for_bit(digits) | []]
-      _ -> [event_for_bit(digits) | add_commands_for(tl(digits))]
+      1 -> [event_for_bit(hd(digits)) | []]
+      _ -> [event_for_bit(hd(digits)) | add_commands_for(tl(digits))]
     end
   end
 
-  defp event_for_bit(digits) do
-    case hd(digits) do
-      1 -> @events[:math.pow(10,length(digits) - 1) |> round]
-      0 -> nil
-    end
-  end
+  defp event_for_bit({0, index}), do: nil
+  defp event_for_bit({1, index}), do: @events[:math.pow(10,index) |> round]
 end
