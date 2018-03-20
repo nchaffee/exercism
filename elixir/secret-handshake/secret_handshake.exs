@@ -1,4 +1,5 @@
 defmodule SecretHandshake do
+  use Bitwise
   @doc """
   Determine the actions of a secret handshake based on the binary
   representation of the given `code`.
@@ -13,20 +14,23 @@ defmodule SecretHandshake do
 
   10000 = Reverse the order of the operations in the secret handshake
   """
-
-  def commands(number) do
-    Integer.digits(number,2)
-    |> Enum.reverse
-    |> Enum.with_index
+  def commands(code) do
+    Enum.zip(List.duplicate(code,5), [8,4,2,1,16])
     |> Enum.reduce([], &add_commands/2)
-    |> Enum.reverse
   end
 
-  defp add_commands({0, _}, commands), do: commands
-  defp add_commands({_, 0}, commands), do: ["wink" | commands]
-  defp add_commands({_, 1}, commands), do: ["double blink" | commands]
-  defp add_commands({_, 2}, commands), do: ["close your eyes" | commands]
-  defp add_commands({_, 3}, commands), do: ["jump" | commands]
-  defp add_commands({_, 4}, commands), do: Enum.reverse(commands)
-  defp add_commands({_, _}, commands), do: commands
+  defp add_commands({code,16}, commands) when (code &&& 16) == 16 do
+    Enum.reverse(commands)
+  end
+
+  defp add_commands({code,bit}, commands) when (code &&& bit) == bit do
+    [command_for(bit) | commands]
+  end
+
+  defp add_commands({_,_}, commands), do: commands
+
+  defp command_for(1), do: "wink"
+  defp command_for(2), do: "double blink"
+  defp command_for(4), do: "close your eyes"
+  defp command_for(8), do: "jump"
 end
