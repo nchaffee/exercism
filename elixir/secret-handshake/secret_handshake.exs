@@ -14,33 +14,19 @@ defmodule SecretHandshake do
   10000 = Reverse the order of the operations in the secret handshake
   """
 
-  def commands(0), do: []
   def commands(number) do
-    digits = Integer.digits(number,2)
+    Integer.digits(number,2)
     |> Enum.reverse
     |> Enum.with_index
-
-    result = add_commands_for(digits)
-    |> Enum.filter(&(!is_nil(&1)))
-
-    if List.last(result) == "reverse" do
-      result = Enum.reverse(result -- ["reverse"])
-    end
-    result
+    |> Enum.reduce([], &add_commands/2)
+    |> Enum.reverse
   end
 
-  defp add_commands_for(digits) do
-    case length(digits) do
-      1 -> [event_for_bit(hd(digits)) | []]
-      _ -> [event_for_bit(hd(digits)) | add_commands_for(tl(digits))]
-    end
-  end
-
-  defp event_for_bit({0, index}), do: nil
-  defp event_for_bit({_, 0}), do: "wink"
-  defp event_for_bit({_, 1}), do: "double blink"
-  defp event_for_bit({_, 2}), do: "close your eyes"
-  defp event_for_bit({_, 3}), do: "jump"
-  defp event_for_bit({_, 4}), do: "reverse"
-  defp event_for_bit({_, _}), do: nil
+  defp add_commands({0, _}, commands), do: commands
+  defp add_commands({_, 0}, commands), do: ["wink" | commands]
+  defp add_commands({_, 1}, commands), do: ["double blink" | commands]
+  defp add_commands({_, 2}, commands), do: ["close your eyes" | commands]
+  defp add_commands({_, 3}, commands), do: ["jump" | commands]
+  defp add_commands({_, 4}, commands), do: Enum.reverse(commands)
+  defp add_commands({_, _}, commands), do: commands
 end
