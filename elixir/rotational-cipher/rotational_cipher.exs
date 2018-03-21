@@ -9,25 +9,15 @@ defmodule RotationalCipher do
   @spec rotate(text :: String.t(), shift :: integer) :: String.t()
   def rotate(text, shift) do
     text
-    |> String.split("", trim: true)
-    |> Enum.map(&rotate_char(shift, &1))
+    |> String.to_charlist
+    |> Enum.map(&rotate_char(shift + &1, &1))
+    |> Enum.map(&stringify/1)
     |> Enum.join
   end
 
-  defp rotate_char(shift, char) do
-    <<codepoint::utf8>> = char
-    base = base_for(codepoint)
-    if base == 0, do: char, else: stringify((codepoint + shift), base)
-  end
+  defp rotate_char(shifted, old) when old in 96..123, do: rem((shifted - 97),26) + 97
+  defp rotate_char(shifted, old) when old in 64..91, do: rem((shifted - 65),26) + 65
+  defp rotate_char(_, char), do: char
 
-  defp base_for(codepoint) do
-    cond do
-      (codepoint > 96 && codepoint < 123) -> 96
-      (codepoint > 64 && codepoint < 91) -> 64
-      true -> 0
-    end
-  end
-
-  defp stringify(codepoint, base) when codepoint > (base + 26), do: to_string([codepoint - 26])
-  defp stringify(codepoint, base), do: to_string([codepoint])
+  defp stringify(char), do: to_string([char])
 end
