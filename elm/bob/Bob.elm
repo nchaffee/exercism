@@ -1,38 +1,34 @@
-module Bob exposing (hey, isQuestion, allCaps)
-import Regex exposing (contains, regex)
-
-isUpperCase : String -> Bool
-isUpperCase str =
-  Regex.contains (Regex.regex "[A-Z]") str
+module Bob exposing (hey)
+import Char exposing (isUpper)
+import Regex
 
 isLetter : String -> Bool
 isLetter str =
   Regex.contains (Regex.regex "[A-Za-z]") str
 
-filterLetters : List String -> List String
+filterLetters : List Char -> List Char
 filterLetters aListOfLetters =
   List.filter isLetter aListOfLetters
 
-allUpperCase : List String -> Bool
+allUpperCase : List Char -> Bool
 allUpperCase aListOfLetters =
-  (List.all isUpperCase aListOfLetters) && (List.any isUpperCase aListOfLetters)
+  (List.all isUpper aListOfLetters) && (List.any isUpper aListOfLetters)
 
-allCaps : String -> Bool
-allCaps str =
+isAllCaps : String -> Bool
+isAllCaps str =
   getLetters str |> filterLetters |> allUpperCase
 
 isQuestion : String -> Bool
 isQuestion str =
   String.endsWith "?" str
 
-getLetters : String -> List String
+getLetters : String -> List Char
 getLetters str =
-  String.split("") str
+  String.toList str
 
 isEmpty : String -> Bool
 isEmpty str =
-  getLetters str
-  |> List.isEmpty
+  String.trim str == ""
 
 isAllWhiteSpace : String -> Bool
 isAllWhiteSpace str =
@@ -42,13 +38,13 @@ isAllWhiteSpace str =
 
 hey : String -> String
 hey remark =
-  if (isEmpty remark) || (isAllWhiteSpace remark) then
+  if (remark |> isEmpty) || (remark |> isAllWhiteSpace) then
     "Fine. Be that way!"
-  else if isQuestion remark && allCaps remark then
+  else if (remark |> isQuestion) && (remark |> isAllCaps) then
     "Calm down, I know what I'm doing!"
-  else if isQuestion remark then
+  else if remark |> isQuestion then
     "Sure."
-  else if allCaps remark then
+  else if remark |> isAllCaps then
     "Whoa, chill out!"
   else
     "Whatever."
