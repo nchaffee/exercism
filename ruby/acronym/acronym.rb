@@ -4,7 +4,6 @@ class Acronym
   def self.abbreviate(phrase)
     phrase.
     scan(FIRST_LETTER_OF_WORD_REGEX).
-    join.
-    upcase
+    reduce{|acronym, letter| acronym + letter.upcase}
   end
 end
