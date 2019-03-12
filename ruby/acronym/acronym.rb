@@ -1,13 +1,9 @@
-class String
-  def first; self[0]; end
-end
-
 class Acronym
+  FIRST_LETTER_OF_WORD_REGEX = /\b[\w]/
+
   def self.abbreviate(phrase)
     phrase.
-    gsub('-', ' ').
-    split(' ').
-    map(&:first).
+    scan(FIRST_LETTER_OF_WORD_REGEX).
     map(&:upcase).
     join
   end
