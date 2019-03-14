@@ -12,8 +12,8 @@ class ResistorColors
     "white" => 9
   }
   def self.value colors
-    result = ""
-    colors.each {|color| result << COLORS[color].to_s}
-    result.to_i
+    "".tap do |value|
+      colors.each{|color| value << COLORS[color].to_s}
+    end.to_i
   end
 end
