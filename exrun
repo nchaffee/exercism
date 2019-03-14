@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  echo "ya forgot a dirname"
+  exit
+fi
+
+DIRNAME=$1
+FILENAME=${DIRNAME//-/_}
+clear
+ruby -r minitest/pride "ruby/${DIRNAME}/${FILENAME}_test.rb"
