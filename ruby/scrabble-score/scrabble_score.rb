@@ -1,23 +1,23 @@
 class Scrabble
-  SCORES =
+  LETTER_VALUES =
     {
-      1 => ['A','E','I','O','U','L','N','R','S','T'],
-      2 => ['D','G'],
-      3 => ['B','C','M','P'],
-      4 => ['F','H','V','W','Y'],
-      5 => ['K'],
-      8 => ['J','X'],
-      10 => ['Q','Z']
+      ['A','E','I','O','U','L','N','R','S','T'] => 1,
+      ['D','G'] => 2,
+      ['B','C','M','P'] => 3,
+      ['F','H','V','W','Y'] => 4,
+      ['K'] => 5,
+      ['J','X'] => 8,
+      ['Q','Z'] => 10
     }.freeze
 
   def initialize(word)
-    @letters = word.nil? ? [] : word.scan(/\w/)
+    @letters = word.to_s.scan(/\w/)
   end
 
   def score
-    @letters.map do |letter| 
-      SCORES.filter{|k,v| v.include?(letter.upcase)}.keys.first
-    end.sum
+    @letters.sum do |letter|
+      LETTER_VALUES.filter{|k,v| k.include?(letter.upcase)}.values.first
+    end
   end
 
   def self.score(word)
