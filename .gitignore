@@ -2,3 +2,9 @@
 **/.DS_Store
 .rbenv-gemsets
 .rubocop_todo.yml
+node_modules
+package.json
+package-lock.json
+**/.eslintrc
+.exercism
+babel.config.js
