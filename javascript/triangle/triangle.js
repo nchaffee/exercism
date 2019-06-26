@@ -1,25 +1,18 @@
 export class Triangle {
-  constructor(side1, side2, side3) {
-    this.side1 = side1;
-    this.side2 = side2;
-    this.side3 = side3;
+  constructor() {
+    this.sides = [...arguments].sort((a,b) => a - b);
+    this.unique_sides = new Set(this.sides).size;
+  }
+
+  static invalid({ sides }) {
+    return (
+      sides.some(s => s <= 0) ||
+      sides.pop() > sides.pop() + sides.pop()
+    )
   }
 
   kind() {
-    if (this.side1 <= 0 || this.side2 <= 0 || this.side3 <= 0) {
-      throw new Error('illegal');
-    } else if (
-                (this.side1 + this.side2) < this.side3 || 
-                (this.side1 + this.side3) < this.side2 ||
-                (this.side2 + this.side3) < this.side1
-              ) {
-      throw new Error('illegal');
-    } else if (this.side1 == this.side2 && this.side1 == this.side3) {
-      return 'equilateral';
-    } else if (this.side1 == this.side2 || this.side1 == this.side3 || this.side2 == this.side3) {
-      return 'isosceles';
-    } else {
-      return 'scalene';
-    }
+    if (Triangle.invalid(this)) { throw new Error('illegal'); }
+    return ['hi mom', 'equilateral', 'isosceles', 'scalene'][this.unique_sides];
   }
 }
