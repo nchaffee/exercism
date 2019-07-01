@@ -63,7 +63,6 @@ describe('React module', () => {
 
     expect(sum.value).toEqual(32);
 
-    sum.name = 'joe'
     inputCell.setValue(3);
 
     expect(sum.value).toEqual(96);

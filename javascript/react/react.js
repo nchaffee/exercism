@@ -1,74 +1,56 @@
-import { isUndefined } from 'util';
-
 const newId = () => '_' + Math.random().toString(36).substr(2, 9);
 
 export class InputCell {
     constructor (value) {
-        this.outsideCells = [];
-        this.events = [];
+        this.outputs = new Set();
+        this.events = new Set();
         this.setValue(value);
     }
 
-    register(outsideCell) {
-        this.outsideCells.push(outsideCell);
-    }
+    register(output) { this.outputs.add(output); }
 
     setValue(value) {
-        this.events.unshift(newId());
+        let eventId = newId();
+        this.events.add(eventId);
         this.value = value;
-        this.outsideCells.forEach(oc => oc.setValue(this.events[0]));
-        }
+        this.outputs.forEach(o => o.update(eventId));
+    }
 }
 
 export class ComputeCell {
-    constructor (inputCells, func) {
-        this.events = [];
-        this.callbackCells = [];
-        this.inputCells = inputCells;
-        inputCells.forEach(ic => ic.register(this));
+    constructor (inputs, func) {
+        this.events = new Set();
+        this.callbacks = new Set();
+        this.value = func(inputs);
+        this.outputs = new Set();
+        this.inputs = inputs;
         this.func = func;
-        this.value = this.func(this.inputCells);
+        inputs.forEach(i => i.register(this));
     }
 
-    setValue(eventId) {
-        if (this.events[0] != eventId) {
-            this.events.unshift(eventId);
+    update(eventId) {
+        this.events.add(eventId);
+        if (
+            this.inputs.every(i => i.events.has(eventId)) &&
+            this.value != (this.value = this.func(this.inputs))
+            ) {
+                for (let callback of this.callbacks){
+                    callback.fire(this);
+            }
         }
-        if (this.inputCells.every(ic => ic.events.length > 0 && ic.events[0] == eventId)) {
-            let oldValue = this.value;
-            let newValue = this.func(this.inputCells);
-    
-            this.value = newValue;
-            if (oldValue != newValue) {
-                this.callbackCells.forEach(cc => cc.addValue(this.value))
-            }    
-        }
-        if (!isUndefined(this.outsideCell)) {
-            this.outsideCell.setValue(eventId);
-        }
+        this.outputs.forEach(o => o.update(eventId));
     }
 
-    register(outsideCell) {
-        this.outsideCell = outsideCell;
-    }
-
-    addCallback(callbackCell) {
-        this.callbackCells.push(callbackCell);
-    }
-
-    removeCallback(callbackCell) {
-        this.callbackCells = this.callbackCells.filter(cbc => cbc.id != callbackCell.id)
-    }
+    register(output) { this.outputs.add(output) }
+    addCallback(callbackCell) { this.callbacks.add(callbackCell) }
+    removeCallback(callbackCell) { this.callbacks.delete(callbackCell) }
 }
 
 export class CallbackCell {
-    constructor (func) {
-        this.id = newId();
-        this.func = func;
+    constructor (fn) {
+        this.callback = fn;
         this.values = [];
     }
 
-    addValue(value) {
-        this.values.push(value);
-    }
+    fire(computeCell) { this.values.push(this.callback(computeCell)) }
 }
