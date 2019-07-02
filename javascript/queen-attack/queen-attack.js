@@ -1,38 +1,37 @@
 export class QueenAttack {
     constructor(positioning = { white: [0,3], black: [7,3]}) {
-        this.white = positioning.white;
-        this.black = positioning.black;
-        QueenAttack.validate(this);
+        this.positioning = positioning;
+        this.validate(positioning);
     }
 
-    static validate({ white: white, black: black} ) {
+    get white() { return this.positioning.white }
+    get black() { return this.positioning.black }
+
+    validate({ white: white, black: black }) {
         if(white[0] == black[0] && white[1] == black[1]){ 
             throw new Error('Queens cannot share the same space')
         }
     }
 
-    canAttack() { return this.sameColumn() || this.sameRow() || this.sameDiagonal() }
-    sameRow() { return this.white[0] == this.black[0] }
-    sameColumn() { return this.white[1] == this.black[1] }
-    sameDiagonal() { return this.xDiagonal() || this.otherDiagonal() }
-    xDiagonal() { return (Math.abs(this.white[0] - this.white[1]) == Math.abs(this.black[0] - this.black[1])) }
-    otherDiagonal() { return (this.white[0] - this.black[0]) == (this.black[1] - this.white[1]) }
-
-    toString() {
-        return (
-            new Array(8).
-            fill(new Array(8).fill('_')).
-            reduce((outputStr, row, rowIdx) =>
-                outputStr.concat(
-                    row.map((col, colIdx) => 
-                        rowIdx == this.white[0] && colIdx == this.white[1] ? 'W' : 
-                        rowIdx == this.black[0] && colIdx == this.black[1] ? 'B' : 
-                        col
-                    ).
-                    join(" ").
-                    concat("\n")
-                )
-            , "")
-            )
+    _canAttack({ white: white, black: black }) {
+        let sameRow = white[0] == black[0]
+        let sameColumn = white[1] == black[1]
+        let xDiagonal = (Math.abs(white[0] - white[1]) == Math.abs(black[0] - black[1]))
+        let otherDiagonal = (white[0] - black[0]) == (black[1] - white[1])
+        let sameDiagonal = xDiagonal || otherDiagonal
+        return sameColumn || sameRow || sameDiagonal
     }
+    canAttack() { return this._canAttack(this.positioning) }
+
+    _toString({ white: white, black: black }) {
+        return new Array(8).fill(new Array(8).fill('_')).
+            map((row, rowIdx) =>
+                row.map((col, colIdx) =>
+                    rowIdx == white[0] && colIdx == white[1] ? 'W' :
+                    rowIdx == black[0] && colIdx == black[1] ? 'B' :
+                    col
+                ).join(" ").concat("\n")
+            ).join("")
+    }
+    toString() { return this._toString(this.positioning) }
 }
