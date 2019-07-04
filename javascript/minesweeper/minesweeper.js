@@ -1,27 +1,49 @@
-export const annotate = (board) => {
-    let prepBoard = board.map(row => {
-        return Array.from(row).map(sq => {
-            return sq == '*' ? sq : (sq == ' ' ? 0 : 'error')
-        })
-    })
+export const annotate = input => {
+    let board = boardWithZeros(input);
+    mineSweep(board);
+    return boardWithStrings(board);
+}
 
-    prepBoard.forEach((row, ridx) => {
-        row.forEach((sq, cidx) => {
-            if(sq == '*'){
-                for(let rridx = ridx - 1; rridx < ridx + 2; rridx++ ) {
-                    for(let ccidx = cidx - 1; ccidx < cidx + 2; ccidx++ ) {
-                        if(rridx >= 0 && rridx < prepBoard.length && ccidx >= 0 && ccidx < row.length && prepBoard[rridx][ccidx] != '*') {
-                            prepBoard[rridx][ccidx] = prepBoard[rridx][ccidx] + 1;
-                        }
-                    }
-                }
+const boardWithZeros = board =>
+    board.map(row =>
+        Array.
+        from(row).
+        map(square => convertSpacesToZeros(square))
+    )
+
+const convertSpacesToZeros = char => char == ' ' ? 0 : char
+
+const mineSweep = board =>
+    board.forEach((row, rowIndex) =>
+        row.forEach((square, columnIndex) => {
+            if(mineFound(square)){
+                incrementSquaresAdjacentToMine(board, row.length, rowIndex, columnIndex);
             }
         })
-    })
-
-    return prepBoard.map((row) =>
-        row.map((sq) => {
-            return (sq > 0 ? sq.toString() : (sq == 0 ? ' ' : '*'))
-        }).join("")
     )
+
+const mineFound = square => square == '*'
+const rowExists = (row, boardLength) => row >= 0 && row < boardLength
+const columnExists = (column, rowLength) => column >= 0 && column < rowLength
+
+const incrementSquaresAdjacentToMine = (board, rowLength, mineRow, mineCol) => {
+    for(let adjRow = mineRow - 1; adjRow < mineRow + 2; adjRow++ ) {
+        for(let adjCol = mineCol - 1; adjCol < mineCol + 2; adjCol++ ) {
+            if(
+                rowExists(adjRow, board.length) &&
+                columnExists(adjCol, rowLength) &&
+                !mineFound(board[adjRow][adjCol])
+              ) {
+                board[adjRow][adjCol] = board[adjRow][adjCol] + 1;
+            }
+        }
+    }
+    return board;
 }
+
+const boardWithStrings = board => board.map(row => toString(row))
+
+const toString = row =>
+    row.map(square =>
+        square > 0 ? square.toString() : (square == 0 ? ' ' : '*')
+    ).join("")
