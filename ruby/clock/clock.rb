@@ -1,8 +1,8 @@
 class Clock
-    attr_reader :hour, :minute, :minutes
+    attr_reader :minutes
 
     def initialize(hour:0,minute:0)
-        @minutes = hour * 60 + minute
+        @minutes = (hour * 60 + minute) % (60 * 24)
     end
 
     def hour
@@ -28,6 +28,6 @@ class Clock
     end
 
     def ==(other_clock)
-        to_s == other_clock.to_s
+        minutes == other_clock.minutes
     end
 end
