@@ -1,30 +1,33 @@
 class Clock
-    attr_reader :hour, :minute
+    attr_reader :hour, :minute, :minutes
 
     def initialize(hour:0,minute:0)
-        minute_to_hours, @minute = minute.divmod(60);
-        @hour = (hour + minute_to_hours) % 24;
+        @minutes = hour * 60 + minute
     end
 
-    def +(clock)
-        Clock.new(
-            hour: @hour + clock.hour,
-            minute: @minute + clock.minute
-        )
+    def hour
+        @minutes / 60 % 24
     end
 
-    def -(clock)
-        Clock.new(
-            hour: @hour - clock.hour,
-            minute: @minute - clock.minute
-        )        
-    end
-
-    def ==(clock)
-        @hour == clock.hour && @minute == clock.minute
+    def minute
+        @minutes % 60
     end
 
     def to_s
-        "%02d:%02d" % [@hour, @minute]
+        "%02d:%02d" % [hour, minute]
+    end
+
+    def +(other_clock)
+        @minutes += other_clock.minutes
+        self
+    end
+
+    def -(other_clock)
+        @minutes -= other_clock.minutes
+        self
+    end
+
+    def ==(other_clock)
+        to_s == other_clock.to_s
     end
 end
