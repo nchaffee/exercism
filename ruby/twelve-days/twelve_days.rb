@@ -33,8 +33,9 @@ class TwelveDays
         DAYS.each_with_index.inject("") do |output, (day, idx)|
             gifts = idx == 0 ? GIFTS[-1] : (
                 output << "\n\n"
-                gifts_for_this_day = GIFTS[(GIFTS.length - idx - 1), idx]
-                gifts = gifts_for_this_day.push("and " + GIFTS[-1]).join(", ")
+                GIFTS[(GIFTS.length - idx - 1), idx].
+                    push("and " + GIFTS[-1]).
+                    join(", ")
             )
             output << "On the #{day} day of Christmas my true love gave to me: #{gifts}."
             output
