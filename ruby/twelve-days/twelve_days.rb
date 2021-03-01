@@ -15,30 +15,28 @@ class TwelveDays
     ]
 
     GIFTS = [
-        "twelve Drummers Drumming",
-        "eleven Pipers Piping",
-        "ten Lords-a-Leaping",
-        "nine Ladies Dancing",
-        "eight Maids-a-Milking",
-        "seven Swans-a-Swimming",
-        "six Geese-a-Laying",
-        "five Gold Rings",
-        "four Calling Birds",
-        "three French Hens",
-        "two Turtle Doves",
+        "twelve Drummers Drumming, ",
+        "eleven Pipers Piping, ",
+        "ten Lords-a-Leaping, ",
+        "nine Ladies Dancing, ",
+        "eight Maids-a-Milking, ",
+        "seven Swans-a-Swimming, ",
+        "six Geese-a-Laying, ",
+        "five Gold Rings, ",
+        "four Calling Birds, ",
+        "three French Hens, ",
+        "two Turtle Doves, and ",
         "a Partridge in a Pear Tree"
     ]
 
     def self.song
         DAYS.each_with_index.inject("") do |output, (day, idx)|
-            gifts = idx == 0 ? GIFTS[-1] : (
-                output << "\n\n"
-                GIFTS[(GIFTS.length - idx - 1), idx].
-                    push("and " + GIFTS[-1]).
-                    join(", ")
-            )
-            output << "On the #{day} day of Christmas my true love gave to me: #{gifts}."
+            pad, gifts = idx == 0 ?
+                ["", GIFTS[-1]]
+                :
+                ["\n", GIFTS[(GIFTS.length - idx - 1), idx + 1].join()]
+            output << "#{pad}On the #{day} day of Christmas my true love gave to me: #{gifts}.\n"
             output
-        end + "\n"
+        end
     end
 end
