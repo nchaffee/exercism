@@ -5,11 +5,10 @@ class Tournament
         @teams = []
     end
 
-    def find_team(name)
-        if @teams.none? {|team| team.name == name}
-            @teams.push(Team.new(name))
-        end
-        @teams.find{|team| team.name == name}
+    def self.tally(input)
+        tournament = Tournament.new(input)
+        tournament.tally
+        Table.new(tournament).to_s
     end
 
     def tally
@@ -30,10 +29,17 @@ class Tournament
         end
     end
 
-    def self.tally(input)
-        tournament = Tournament.new(input)
-        tournament.tally
-        Table.new(tournament).to_s
+    def find_team(name)
+        init_team(name) unless team_exists?(name)
+        @teams.find{|team| team.name == name}
+    end
+
+    def init_team(name)
+        @teams.push(Team.new(name))
+    end
+
+    def team_exists?(name)
+        @teams.any? {|team| team.name == name}
     end
 
     class Team
@@ -62,25 +68,29 @@ class Tournament
     end
 
     class Table
+        TABLE_LINE = "%-30s | %2s | %2s | %2s | %2s | %2s\n"
+        HEADER = TABLE_LINE % ["Team","MP","W","D","L","P"]
+
         def initialize(tournament)
             @teams = tournament.teams
         end
 
         def to_s
-            output = table_line(["Team","MP","W","D","L","P"])
-            if @teams.any?
-                sorted_teams = @teams.sort_by{|team| [(team.points * -1), team.name]}
-                sorted_teams.each do |team|
-                    columns = [team.name, team.played, team.wins, team.draws, team.losses, team.points].map(&:to_s)
-                    output << table_line(columns)
-                end
-            end
-            output
-        end
-
-        private
-        def table_line(columns)
-            sprintf("%-31s|%3s |%3s |%3s |%3s |%3s\n" % columns)
+            @teams.none? ?
+                HEADER
+                :
+                HEADER + @teams.
+                    sort_by{|team| [(-team.points), team.name]}.
+                    map do |team|
+                        TABLE_LINE % [
+                            team.name,
+                            team.played,
+                            team.wins,
+                            team.draws,
+                            team.losses,
+                            team.points
+                        ].map(&:to_s)
+                    end.join()
         end
     end
 end
