@@ -30,11 +30,11 @@ class Tournament
     end
 
     def find_team(name)
-        init_team(name) unless team_exists?(name)
+        create_team(name) unless team_exists?(name)
         @teams.find{|team| team.name == name}
     end
 
-    def init_team(name)
+    def create_team(name)
         @teams.push(Team.new(name))
     end
 
@@ -46,30 +46,19 @@ class Tournament
         attr_reader :name, :played, :wins, :losses, :draws, :points
         def initialize(name)
             @name = name
-            @wins = @losses = @draws = @points = @played = 0
+            @wins = @losses = @draws = 0
         end
 
-        def win
-            @played += 1
-            @wins += 1
-            @points += 3
-        end
-
-        def loss
-            @played += 1
-            @losses += 1
-        end
-
-        def draw
-            @played += 1
-            @draws += 1
-            @points += 1
-        end
+        def win() @wins += 1; end
+        def loss() @losses += 1; end
+        def draw() @draws += 1; end
+        def played() @wins + @losses + @draws; end
+        def points() @wins * 3 + @draws; end
     end
 
     class Table
         TABLE_LINE = "%-30s | %2s | %2s | %2s | %2s | %2s\n"
-        HEADER = TABLE_LINE % ["Team","MP","W","D","L","P"]
+        HEADER = TABLE_LINE % %w{Team MP W D L P}
 
         def initialize(tournament)
             @teams = tournament.teams
