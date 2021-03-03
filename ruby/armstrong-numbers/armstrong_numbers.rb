@@ -1,9 +1,6 @@
 class ArmstrongNumbers
     def self.include?(num)
-        num == num.to_s.
-            each_char.
-            map(&:to_i).
-            map{|d| d.pow(num.to_s.length)}.
-            sum
+        digits = num.digits
+        num == digits.sum{|d| d.pow(digits.count)}
     end
 end
