@@ -6,23 +6,11 @@ class Game
     end
 
     def roll(pins)
-        raise BowlingError if pins < 0 || pins > 10
-        if @frames.size == 10 && @frames[-1].size == 2 && @frames[-1].sum < 10
-            raise BowlingError
-        end
-        if @first_throw && @first_throw + pins > 10
-            raise BowlingError
-        elsif @first_throw && pins < 10
+        raise BowlingError if too_many(pins) || too_few(pins) || game_complete
+        if @first_throw && pins < 10
             @frames << [@first_throw, pins]
             @first_throw = nil
-        elsif last_frame?
-            last_frame = @frames[-1]
-            if last_frame.first == 10 && 
-                last_frame.size == 2 && 
-                last_frame[1] < 10 &&
-                last_frame[1] + pins > 10
-                raise BowlingError
-            end
+        elsif last_frame
             last_frame << pins
         elsif pins == 10
             @frames << [pins]
@@ -33,19 +21,16 @@ class Game
     end
 
     def score
-        raise BowlingError if @frames.size < 10
+        raise BowlingError unless game_complete
         @frames.each_with_index.map do |frame, idx|
             score = frame.sum
-            if strike?(frame)
-                next_frame = @frames[idx+1]
-                if next_frame.size > 1
-                    score += @frames[idx+1][0] + @frames[idx+1][1]
-                else
-                    score += next_frame.first
-                    score += @frames[idx+2].first
+            unless idx == 9
+                next_2_rolls = @frames[idx+1..-1].flatten[0..1]
+                if strike?(frame)
+                    score += next_2_rolls.sum
+                elsif spare?(frame)
+                    score += next_2_rolls.first
                 end
-            elsif spare?(frame)
-                score += @frames[idx+1].first
             end
             score
         end.sum
@@ -57,11 +42,48 @@ class Game
     end
 
     def strike?(frame)
-        frame.size == 1 && frame.first == 10
+        frame.first == 10
     end
 
-    def last_frame?
-        @frames.size == 10
+    def last_frame
+        @frames[9]
+    end
+
+    def game_complete
+        (last_frame && open_frame?(last_frame)) ||
+            (last_frame && last_frame.size == 3)
+    end
+
+    def open_frame?(frame)
+        frame.size == 2 && frame.sum < 10
+    end
+
+    def too_few(pins)
+        pins < 0
+    end
+
+    def too_many(pins)
+        pins > 10 ||
+            (@first_throw && @first_throw + pins > 10) ||
+            (
+                last_frame &&
+                fill_ball? &&
+                strike?(last_frame) &&
+                second_throw(last_frame) < 10 &&
+                second_throw(last_frame) + pins > 10
+            )
+    end
+
+    def fill_ball?
+        last_frame.size == 2
+    end
+
+    def first_throw(frame)
+        frame[0]
+    end
+
+    def second_throw(frame)
+        frame[1]
     end
 
     class BowlingError < StandardError
