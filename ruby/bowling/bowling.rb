@@ -25,8 +25,9 @@ class Game
         raise BowlingError unless game_complete
         frames.each_with_index.map do |frame, idx|
             score = frame.sum
-            score += next_2_rolls(idx).sum if strike?(frame) && idx < 9
-            score += next_2_rolls(idx).first if spare?(frame) && idx < 9
+            next score if idx == 9
+            score += next_2_rolls(idx).sum if strike?(frame)
+            score += next_2_rolls(idx).first if spare?(frame)
             score
         end.sum
     end
