@@ -6,7 +6,7 @@ class Bst
 
     def each
         return all_data.to_enum unless block_given?
-        all_data.each {|node| yield(node)}
+        all_data.each {|data| yield(data)}
     end
 
     def all_data
