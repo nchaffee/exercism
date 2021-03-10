@@ -11,8 +11,9 @@ class Bst
 
     def all_data
         data = [@data]
-        [@left, @right].each{|node| data << node.all_data if node}
-        data.flatten.sort
+        data.unshift(@left.all_data) if @left
+        data.push(@right.all_data) if @right
+        data.flatten
     end
 
     def insert(num)
