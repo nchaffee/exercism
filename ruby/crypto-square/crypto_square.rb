@@ -9,10 +9,8 @@ class Crypto
         num_rows = Math.sqrt(chars.size).ceil
         while chars.size % num_rows > 0 do chars.push(" ") end
 
-        chars.each_with_index.
-            reduce(Array.new(num_rows, "")) do |cipher, (char, idx)|
-                cipher[idx % num_rows] += char
-                cipher
-            end.join(" ")
+        cipher = Array.new(num_rows, "")
+        chars.size.times {|idx| cipher[idx % num_rows] += chars.shift }
+        cipher.join(" ")
     end
 end
