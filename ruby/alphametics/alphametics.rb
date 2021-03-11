@@ -1,17 +1,17 @@
+# 23, 23
+# 194, 222
+# 639, 580
+
 class Alphametics
     def self.solve(puzzle)
         letters = puzzle.scan(/\w/).uniq
-        puts letters.inspect
         
         words,final = puzzle.split("==")
         words = words.split("+").map(&:strip)
         final = final.strip
-        puts words.inspect
-        puts final.inspect
         
         solution = {}
         matrix = self.number_matrix([], letters, letters.size)
-        # puts matrix.inspect
 
         matrix.each do |combo|
             possible_solution = letters.reduce({}) do |acc, letter|
@@ -19,13 +19,26 @@ class Alphametics
                 acc
             end
             
-            numbers_to_add = (words + [final]).map do |word|
-                word.chars.map{|char| possible_solution[char]}
+            dictionary = {}
+            (words + [final]).each do |word|
+                if dictionary.has_key?(word)
+                    dictionary[word][:count] += 1
+                else
+                    dictionary[word] = {
+                        count: 1,
+                        digits: word.chars.map{|char| possible_solution[char]}
+                    }
+                end
             end
-            next if numbers_to_add.any? {|num| num.first == 0}
-            numbers_to_add = numbers_to_add.map(&:join).map(&:to_i)
-            total = numbers_to_add.pop
-            if numbers_to_add.sum == total
+
+            next if dictionary.any? {|word,data| data[:digits].first == 0}
+
+            addends = dictionary.map do |word,data|
+                (data[:digits].join.to_i) * data[:count] unless word == final
+            end.compact.sum
+            total = dictionary[final][:digits].join.to_i
+
+            if addends == total
                 solution = possible_solution
                 break
             end
@@ -48,12 +61,4 @@ class Alphametics
             end
         end
     end
-    <<-IDEAS
-     can make matrix and brute force it
-        can exclude repeated numbers
-        10 numbers possible for 2-10 letters
-     never use zero for a leading number
-     return empty {} when no solution found
-
-    IDEAS
 end
