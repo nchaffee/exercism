@@ -1,41 +1,39 @@
-# 23, 23
-# 194, 222
-# 639, 580
-
 class Alphametics
+    DIGITS = [*1..9,0]
     def self.solve(puzzle)
         letters = puzzle.scan(/\w/).uniq
         
         words,final = puzzle.split("==")
         words = words.split("+").map(&:strip)
         final = final.strip
+        all_words = words + [final]
         
         solution = {}
-        matrix = self.number_matrix([], letters, letters.size)
-
-        matrix.each do |combo|
+        self.number_matrix(letters.size).each do |combo|
             possible_solution = letters.reduce({}) do |acc, letter|
                 acc[letter] = combo.pop
                 acc
             end
-            
-            dictionary = {}
-            (words + [final]).each do |word|
+
+            # dictionary makes 199 addends test 20% faster, others slower
+            dictionary, leading_zero = {}, false
+            all_words.each do |word|
                 if dictionary.has_key?(word)
                     dictionary[word][:count] += 1
                 else
-                    dictionary[word] = {
-                        count: 1,
-                        digits: word.chars.map{|char| possible_solution[char]}
-                    }
+                    word_in_digits = word.chars.map{|char| possible_solution[char]}
+                    if word_in_digits.first == 0
+                        leading_zero = true
+                        break
+                    end
+                    dictionary[word] = {count: 1, digits: word_in_digits}
                 end
             end
-
-            next if dictionary.any? {|word,data| data[:digits].first == 0}
+            next if leading_zero
 
             addends = dictionary.map do |word,data|
-                (data[:digits].join.to_i) * data[:count] unless word == final
-            end.compact.sum
+                word == final ? 0 : (data[:digits].join.to_i) * data[:count]
+            end.sum
             total = dictionary[final][:digits].join.to_i
 
             if addends == total
@@ -47,13 +45,16 @@ class Alphametics
         solution
     end
 
-    def self.number_matrix(combos, letters, depth)
+    # leaves out repeated numbers
+    # Alphametics.number_matrix(2)
+    # => [[0, 1], [0, 2], [0, 3]...[4, 2], [4, 3], [4, 5]...[9, 6], [9, 7], [9, 8]]
+    def self.number_matrix(depth, combos = [])
         if depth == 1
-            10.times {|num| combos.push([num])}
+            DIGITS.each {|num| combos.push([num])}
             combos
         else
-            self.number_matrix(combos, letters, depth - 1).reduce([]) do |acc, nums_ary| 
-                10.times do |num| 
+            self.number_matrix(depth - 1, combos).reduce([]) do |acc, nums_ary|
+                DIGITS.each do |num|
                     new_combo = nums_ary + [num]
                     acc.push(new_combo) if new_combo.size == new_combo.uniq.size
                 end
