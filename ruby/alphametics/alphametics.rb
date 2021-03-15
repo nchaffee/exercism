@@ -1,51 +1,44 @@
 class Alphametics
     DIGITS = [*1..9,0]
     def self.solve(puzzle)
+        solution = {}
         letters = puzzle.scan(/\w/).uniq
-        
         words,final = puzzle.split("==")
         words = words.split("+").map(&:strip)
         final = final.strip
         all_words = words + [final]
         
-        solution = {}
-        self.number_matrix(letters.size).each do |combo|
+        (0..9).to_a.permutation(letters.size).each do |combo|
             possible_solution = letters.reduce({}) do |acc, letter|
                 acc[letter] = combo.pop
                 acc
             end
 
-            # dictionary makes 199 addends test 20% faster, others slower
+            # dictionary uglier & longer but makes 199 addends test faster
             dictionary, leading_zero = {}, false
             all_words.each do |word|
                 if dictionary.has_key?(word)
                     dictionary[word][:count] += 1
                 else
                     word_in_digits = word.chars.map{|char| possible_solution[char]}
-                    if word_in_digits.first == 0
-                        leading_zero = true
-                        break
-                    end
+                    (leading_zero = true; break) if word_in_digits.first == 0
                     dictionary[word] = {count: 1, digits: word_in_digits}
                 end
             end
             next if leading_zero
 
-            addends = dictionary.map do |word,data|
-                word == final ? 0 : (data[:digits].join.to_i) * data[:count]
-            end.sum
             total = dictionary[final][:digits].join.to_i
+            addends = dictionary.slice(*words).map do |_word,data|
+                (data[:digits].join.to_i) * data[:count]
+            end.sum
 
-            if addends == total
-                solution = possible_solution
-                break
-            end
+            (solution = possible_solution; break) if addends == total
         end
 
         solution
     end
 
-    # leaves out repeated numbers
+    # leaves out repeated numbers but slower than Array#permutation
     # Alphametics.number_matrix(2)
     # => [[0, 1], [0, 2], [0, 3]...[4, 2], [4, 3], [4, 5]...[9, 6], [9, 7], [9, 8]]
     def self.number_matrix(depth, combos = [])
