@@ -1,20 +1,19 @@
 class Nucleotide
     NUCLEOTIDES = "ACTG"
-
-    def self.from_dna(str)
-        raise ArgumentError unless str.delete(NUCLEOTIDES).empty?
-        new(str)
-    end
-
     def initialize(str)
+        raise ArgumentError unless str.delete(NUCLEOTIDES).empty?
         @strand = str
     end
 
-    def count(letter)
-        @strand.chars.keep_if{|tide| tide == letter }.size
+    def histogram
+        NUCLEOTIDES.chars.to_h{|char| [char, @strand.count(char)]}
     end
 
-    def histogram
-        NUCLEOTIDES.chars.map{|char| [char, count(char)]}.to_h
+    def count(letter)
+        histogram[letter]
+    end
+
+    class << self
+        alias_method :from_dna, :new
     end
 end
