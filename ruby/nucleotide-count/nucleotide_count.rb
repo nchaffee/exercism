@@ -1,8 +1,8 @@
 class Nucleotide
-    NUCLEOTIDES = ['A','C','T','G']
+    NUCLEOTIDES = "ACTG"
 
     def self.from_dna(str)
-        raise ArgumentError unless str.chars.all?{|l| NUCLEOTIDES.include?(l)}
+        raise ArgumentError unless str.delete(NUCLEOTIDES).empty?
         new(str)
     end
 
@@ -15,6 +15,6 @@ class Nucleotide
     end
 
     def histogram
-        NUCLEOTIDES.map{|char| [char, count(char)]}.to_h
+        NUCLEOTIDES.chars.map{|char| [char, count(char)]}.to_h
     end
 end
