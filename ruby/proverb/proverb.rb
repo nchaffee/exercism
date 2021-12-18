@@ -5,12 +5,10 @@ class Proverb
     end
 
     def to_s
-        line = "For want of a %s the %s was lost."
-        last_line = "And all for the want of a %s%s."
         @words
             .each_cons(2)
-            .map {|words| line % words }
-            .tap {|lines| lines << last_line % [(@qualifier.to_s + " ").lstrip, @words.first]}
+            .map{|word1, word2| "For want of a #{word1} the #{word2} was lost."}
+            .tap{|lines| lines << "And all for the want of a %s%s." % [(@qualifier.to_s + " ").lstrip, @words.first]}
             .join("\n")
     end
 end
