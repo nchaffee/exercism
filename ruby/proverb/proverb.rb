@@ -5,8 +5,9 @@ class Proverb
     end
 
     def to_s
-        @words.each_cons(2).with_object("") do |(word1, word2), memo|
-            memo << "For want of a #{word1} the #{word2} was lost.\n"
-        end + "And all for the want of a %s%s." % [(@qualifier.to_s + " ").lstrip, @words.first]
+        @words.each.with_index.inject("") do |memo, (word, index)|
+            memo += "For want of a #{@words[index-1]} the #{word} was lost.\n" unless index == 0
+            memo
+        end + "And all for the want of a #{@qualifier + " " if @qualifier}%s." % @words.first
     end
 end
