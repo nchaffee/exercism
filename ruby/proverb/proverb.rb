@@ -7,8 +7,8 @@ class Proverb
     def to_s
         @words
             .each_cons(2)
-            .map{|word1, word2| "For want of a #{word1} the #{word2} was lost."}
+            .map{|word1, word2| "For want of a #{word1} the #{word2} was lost.\n"}
             .tap{|lines| lines << "And all for the want of a %s%s." % [(@qualifier.to_s + " ").lstrip, @words.first]}
-            .join("\n")
+            .join
     end
 end
