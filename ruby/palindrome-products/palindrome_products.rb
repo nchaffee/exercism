@@ -1,4 +1,15 @@
-require 'ostruct'
+class Palindrome
+    attr_reader :value, :factors
+    def initialize(value,factors)
+        @value = value
+        @factors = factors
+    end
+
+    def <=>(other)
+        @value <=> other.value
+    end
+end
+
 class Palindromes
     def self.palindrome?(arr)        
         return true if arr.length <= 1
@@ -11,19 +22,20 @@ class Palindromes
 
     def generate
         @palindromes = 
-            (@min_factor..@max_factor).
-                to_a.
-                repeated_combination(2).
-                group_by{|a,b| a * b}.
-                select{|value, _factors| Palindromes.palindrome?(value.digits)}.
-                map{|value, factors| OpenStruct.new(value: value, factors: factors)}
+            (@min_factor..@max_factor)
+                .to_a
+                .repeated_combination(2)
+                .group_by{|a,b| a * b}
+                .select{|value, _factors| Palindromes.palindrome?(value.digits)}
+                .map{|value, factors| Palindrome.new(value, factors)}
+                .sort
     end
 
     def largest
-        @palindromes.max{|a,b| a.value <=> b.value }
+        @palindromes.last
     end
 
     def smallest
-        @palindromes.min{|a,b| a.value <=> b.value }
+        @palindromes.first
     end
 end
