@@ -1,11 +1,11 @@
 class PerfectNumber
     def self.classify(int)
         raise RuntimeError unless int.positive?
-        factor_sum = (1.upto(int-1))
-            .select { |num| int % num.zero? }
-            .sum
-        factor_sum == int ? "perfect" : 
-            factor_sum >= int ? "abundant" 
-                : "deficient"
+        below_int = 1..(int - 1)
+        case below_int.select {|num| (int % num).zero? }.sum
+        when below_int then "deficient"
+        when int then "perfect"
+        else "abundant" 
+        end
     end
 end
