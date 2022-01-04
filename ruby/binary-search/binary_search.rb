@@ -15,8 +15,8 @@ class BinarySearch
         when list.first == target then start
         when list.last == target then start + last
         when list[middle] == target then start + middle 
-        when list[middle] > target then find(list[start..middle], target, start)
-        else find(list[middle..last], target, middle)
+        when list[middle] > target then find(list[start..(middle-1)], target, start)
+        else find(list[(middle+1)..last], target, middle+1)
         end
     rescue
         nil
