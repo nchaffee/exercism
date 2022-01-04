@@ -1,22 +1,24 @@
 class BinarySearch
     def initialize(list)
         @list = list.sort
-        @first = 0
-        @last = list.length - 1
     end
 
     def search_for(target)
-        return nil if @list.empty? || @first + 1 == @last
-        return @first if @list[@first] == target
-        return @last if @list[@last] == target
-        middle = (@last - @first) / 2 + @first
-        return middle if @list[middle] == target
-        if @list[middle] > target
-            @last = middle
-            search_for(target)
-        else
-            @first = middle
-            search_for(target)
+        return nil if @list.empty? || !target.between?(@list.first,@list.last)
+        find(@list, target, 0)
+    end
+
+    def find(list, target, start)
+        last = list.length - 1
+        middle = last / 2
+        case
+        when list.first == target then start
+        when list.last == target then start + last
+        when list[middle] == target then start + middle 
+        when list[middle] > target then find(list[start..middle], target, start)
+        else find(list[middle..last], target, middle)
         end
+    rescue
+        nil
     end
 end
