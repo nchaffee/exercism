@@ -30,7 +30,7 @@ class Bucket
 end
 
 class TwoBucket
-  attr_reader :goal_bucket, :moves, :other_bucket
+  attr_reader :moves
   def initialize(bucket_one_max_size, bucket_two_max_size, desired_liters, starting_bucket)
     @moves = 0
     @buckets = [
@@ -39,6 +39,14 @@ class TwoBucket
     ]
     @buckets.reverse! if starting_bucket == 'two'
     pour
+  end
+
+  def goal_bucket
+    @goal_bucket ||= @buckets.find(&:winner?).label
+  end
+  
+  def other_bucket
+    @other_bucket ||= @buckets.find{|b| b.label != @goal_bucket}.liters
   end
 
   private
@@ -57,7 +65,5 @@ class TwoBucket
       end
       @moves += 1
     end
-    @goal_bucket = @buckets.find(&:winner?).label
-    @other_bucket = @buckets.find{|b| b.label != @goal_bucket}.liters 
   end
 end
