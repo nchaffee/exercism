@@ -1,7 +1,8 @@
 class Bucket
   attr_accessor :liters, :max_size, :label
-  def initialize(liters, max_size, desired_liters, label)
-    @liters, @max_size, @desired_liters, @label = liters, max_size, desired_liters, label
+  def initialize(target, max_size, label)
+    @target, @max_size, @label = target, max_size, label
+    @liters = 0
   end
 
   def empty?
@@ -21,32 +22,37 @@ class Bucket
   end
 
   def instant_winner?
-    @max_size == @desired_liters
+    @max_size == @target
+  end
+
+  def pour_into(bucket)
+    while !empty? && !bucket.full? do
+      @liters -= 1
+      bucket.liters += 1
+    end    
   end
 
   def winner?
-    @liters == @desired_liters
+    @liters == @target
   end
 end
 
 class TwoBucket
   attr_reader :moves
-  def initialize(bucket_one_max_size, bucket_two_max_size, desired_liters, starting_bucket)
+  def initialize(size1, size2, target, first_bucket)
     @moves = 0
-    @buckets = [
-      @bucket_one = Bucket.new(0, bucket_one_max_size, desired_liters, 'one'),
-      @bucket_two = Bucket.new(0, bucket_two_max_size, desired_liters, 'two')
-    ]
-    @buckets.reverse! if starting_bucket == 'two'
+    @buckets = [[target, size1, 'one'],[target, size2, 'two']]
+      .map{|data| Bucket.new(*data)}
+      .sort_by!{|b| b.label == first_bucket ? 0 : 1}
     pour
   end
 
   def goal_bucket
-    @goal_bucket ||= @buckets.find(&:winner?).label
+    @buckets.first.label
   end
-  
+
   def other_bucket
-    @other_bucket ||= @buckets.find{|b| b.label != @goal_bucket}.liters
+    @buckets.last.liters
   end
 
   private
@@ -57,13 +63,10 @@ class TwoBucket
       when !bucket1.empty? && bucket2.instant_winner? then bucket2.fill!  
       when bucket2.full? then bucket2.empty!
       when bucket1.empty? then bucket1.fill!
-      else 
-        while !bucket1.empty? && !bucket2.full? do
-          bucket1.liters -= 1
-          bucket2.liters += 1
-        end    
+      else bucket1.pour_into(bucket2)
       end
       @moves += 1
     end
-  end
+    @buckets.sort_by!{|b| b.winner? ? 0 : 1}
+  end  
 end
