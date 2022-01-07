@@ -8,14 +8,21 @@ class BaseConverter
         convert_from_base_10(total, output_base)
     end
 
-    # map + sum
     # def self.convert_to_base_10(digits, input_base)
     #     digits.reverse.map.with_index do |digit, index|
     #        digit * input_base ** index 
     #     end.sum
     # end
 
-    # recursive
+    # def self.convert_from_base_10(total, output_base)
+    #     result = []
+    #     until total.zero? do
+    #         total, rem = total.divmod(output_base)
+    #         result.unshift(rem)
+    #     end
+    #     result.empty? ? result.unshift(0) : result
+    # end
+
     def self.convert_to_base_10(digits, input_base, total = 0)
         if digits.length == 0
             total
@@ -26,7 +33,6 @@ class BaseConverter
     end
 
     def self.convert_from_base_10(total, output_base, digits = [])
-        return total.digits.reverse if output_base == 10
         if total.zero?
             digits.unshift(0) if digits.length.zero?
             digits
