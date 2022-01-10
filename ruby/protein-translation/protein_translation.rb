@@ -13,15 +13,12 @@ class Translation
     }
     
     def self.of_rna(strand)
-        trans = strand.chars.each_slice(3).map do |codon|
-            of_codon(codon.join)
-        end
-        raise InvalidCodonError if trans.any?(&:nil?)
-        if trans.include?('STOP')
-            stop = trans.index('STOP') - 1
-            trans[0..stop]
-        else
-            trans
+        strand.chars.each_slice(3).with_object([]) do |codon, trans|
+            case protein = of_codon(codon.join)
+            when nil then raise InvalidCodonError
+            when 'STOP' then return trans
+            end
+            trans << protein
         end
     end
 
