@@ -1,11 +1,5 @@
 class SecretHandshake
-     COMMANDS = [
-        [1, "wink"],
-        [10, "double blink"],
-        [100, "close your eyes"],
-        [1000, "jump"],
-        [10000, "Reverse the order of the operations in the secret handshake."],
-    ]
+    COMMANDS = %W{wink double\sblink close\syour\seyes jump Reverse}
 
     def initialize(num)
         @num = num
@@ -19,9 +13,9 @@ class SecretHandshake
             .map(&:to_i)
             .reverse
             .zip(COMMANDS)
-            .each_with_object([]) do |(bit, (_match,command)), c|
+            .each_with_object([]) do |(bit, command), c|
                 unless bit.zero?
-                    c.reverse! and next if command.split.first == "Reverse"
+                    c.reverse! and next if /Reverse/ =~ command
                     c.push(command)
                 end
             end
