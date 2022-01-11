@@ -4,9 +4,9 @@ class Atbash
 
     def self.encode(text, separator = ' ')
         text
-            .downcase
-            .gsub(/[^a-z0-9]/, '')
             .chars
+            .map(&:downcase)
+            .reject{|c| c =~ /[^a-z0-9]/}
             .map{|c| ENCODE[c] ? ENCODE[c] : c}
             .each_slice(5)
             .flat_map(&:join)
