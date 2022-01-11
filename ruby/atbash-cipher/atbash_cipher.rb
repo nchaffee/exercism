@@ -1,15 +1,15 @@
 class Atbash
-    ALPHABET = ('a'..'z').to_a
+    ALPHABET = [*'a'..'z']
     ENCODE = ALPHABET.zip(ALPHABET.reverse).to_h
 
     def self.encode(text, separator = ' ')
         text
             .chars
             .map(&:downcase)
-            .reject{|c| c =~ /[^a-z0-9]/}
+            .reject{|c| c =~ /[^[:alnum:]]/}
             .map{|c| ENCODE[c] ? ENCODE[c] : c}
             .each_slice(5)
-            .flat_map(&:join)
+            .map(&:join)
             .join(separator)
     end
 
