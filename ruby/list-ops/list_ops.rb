@@ -2,16 +2,18 @@ class ListOps
   class << self
     def factorial_reducer(some_ary)
       sum = 1
-      while some_ary != [] do
-        sum *= some_ary.pop
+      ary = some_ary.dup
+      while ary != [] do
+        sum *= ary.pop
       end
       sum
     end
 
     def sum_reducer(some_ary)
       sum = 0
-      while some_ary != [] do
-        sum += some_ary.pop
+      ary = some_ary.dup
+      while ary != [] do
+        sum += ary.pop
       end
       sum
     end
