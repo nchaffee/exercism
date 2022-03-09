@@ -4,14 +4,11 @@ class Change
     class ImpossibleCombinationError < StandardError; end
     class NegativeTargetError < StandardError; end
 
-    attr_reader :target
-    def self.generate(all_coins, target_change)
-        change = self.new(all_coins, target_change)
-        if !change.target.zero? && change.result.empty?
-            raise ImpossibleCombinationError
-        else
-            change.result
-        end
+    attr_reader :result, :target
+    def self.generate(coins, target)
+        change = self.new(coins, target)
+        raise ImpossibleCombinationError if !change.target.zero? && change.result.empty?
+        change.result
     end
 
     def initialize(coins, target)
@@ -21,16 +18,13 @@ class Change
         @tried = Set.new
         @result = []
         @target = target
-        if target > 100
-            change = []
+        change = [].tap do |change|
             while target > 100 do
                 change << coins.max
                 target -= coins.max
             end
-            add_coins(change)
-        else
-            add_coins([])
         end
+        add_coins(change)
     end
 
     def add_coins(change)
@@ -38,26 +32,13 @@ class Change
         when change.sum == @target 
             verify(change)
         when change.sum < @target
-            if @tried.add?(change.sort)
-                @coins.each do |coin|
-                    next_change = change + [coin]
-                    add_coins(next_change) unless @tried.include?(next_change)
-                end
-            end
-        else
-            nil
+            @coins.each {|coin| add_coins(change + [coin])} if @tried.add?(change.sort)
         end
     end
 
     def verify(change)
-        if change.sum == @target
-            if result.empty? || change.size < result.size
-                @result = change 
-            end
+        if change.sum == @target && (result.empty? || change.size < result.size)
+            @result = change.sort
         end
-    end
-
-    def result
-        @result.sort
     end
 end
