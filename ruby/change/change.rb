@@ -1,41 +1,63 @@
+require 'set'
+
 class Change
+    class ImpossibleCombinationError < StandardError; end
+    class NegativeTargetError < StandardError; end
+
+    attr_reader :target
     def self.generate(all_coins, target_change)
-        self.new(all_coins, target_change).result
+        change = self.new(all_coins, target_change)
+        if !change.target.zero? && change.result.empty?
+            raise ImpossibleCombinationError
+        else
+            change.result
+        end
     end
 
     def initialize(coins, target)
+        raise NegativeTargetError if target < 0
+        raise ImpossibleCombinationError if target < coins.min && !target.zero?
         @coins = coins.sort.reverse
+        @tried = Set.new
+        @result = []
         @target = target
-        @results = [] # change to Set to keep unique
-        add_coins
-    end
-
-    def add_coins()
-        # 1 - go thru each coin size and add each number of coins that fits, all possibilities
-        # 2 - add biggest remaining for other coins OR repeat #1
-        # 3 - add to results when remaining is zero
-        # 4 - return shortest result
-
-        @coins.permutation(@coins.size).to_a.each do |coins|
-            coins.each do |coin|
-                fill_from(coins.rotate(coins.index(coin)))
+        if target > 100
+            change = []
+            while target > 100 do
+                change << coins.max
+                target -= coins.max
             end
+            add_coins(change)
+        else
+            add_coins([])
         end
     end
 
-    def fill_from(coins)
-        remaining = @target
-        result = []
-        coins.each do |coin|
-            while remaining >= coin do
-                remaining -= coin
-                result.push(coin)
+    def add_coins(change)
+        case 
+        when change.sum == @target 
+            verify(change)
+        when change.sum < @target
+            if @tried.add?(change.sort)
+                @coins.each do |coin|
+                    next_change = change + [coin]
+                    add_coins(next_change) unless @tried.include?(next_change)
+                end
+            end
+        else
+            nil
+        end
+    end
+
+    def verify(change)
+        if change.sum == @target
+            if result.empty? || change.size < result.size
+                @result = change 
             end
         end
-        @results.push(result.sort) if remaining == 0
     end
 
     def result
-        @results.sort{|a,b| b.size <=> a.size}.last
+        @result.sort
     end
 end
