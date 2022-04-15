@@ -1,4 +1,4 @@
-export class at {
+export class Clock {
   constructor(hours, minutes) {
     this.hours = hours;
     this.minutes = minutes;
@@ -28,15 +28,15 @@ export class at {
 
   plus(minutes) {
     this.minutes += minutes;
-    return new at(this.hours, this.minutes);
+    return new Clock(this.hours, this.minutes);
   }
 
   minus(minutes) {
     this.minutes -= minutes;
-    return new at(this.hours, this.minutes);
+    return new Clock(this.hours, this.minutes);
   }
 
-  equals(otherAt) {
-    return (this.minutes == otherAt.minutes && this.hours == otherAt.hours);
+  equals(otherClock) {
+    return (this.minutes == otherClock.minutes && this.hours == otherClock.hours);
   }
 }
