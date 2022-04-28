@@ -36,19 +36,19 @@ describe('Zipper', () => {
     expect(zipper.left().left()).toBe(null);
   });
 
-  xtest('tree from deep focus', () => {
+  test('tree from deep focus', () => {
     expect(zipper.left().right().toTree()).toEqual(t1);
   });
 
-  xtest('traversing up from top', () => {
+  test('traversing up from top', () => {
     expect(zipper.up()).toEqual(null);
   });
 
-  xtest('left, right and up', () => {
+  test('left, right and up', () => {
     expect(zipper.left().up().right().up().left().right().value()).toEqual(3);
   });
 
-  xtest('setValue', () => {
+  test('setValue', () => {
     expect(zipper.left().setValue(5).toTree()).toEqual(t2);
   });
 
@@ -56,7 +56,9 @@ describe('Zipper', () => {
     expect(zipper.left().right().up().setValue(5).toTree()).toEqual(t2);
   });
 
-  xtest('setLeft with leaf', () => {
+  test('setLeft with leaf', () => {
+    console.log('xxxxxxxxx')
+    console.log(zipper)
     expect(zipper.left().setLeft(leaf(5)).toTree()).toEqual(t3);
   });
 

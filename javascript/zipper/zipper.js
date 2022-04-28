@@ -5,6 +5,7 @@ export class Zipper {
   }
 
   static fromTree(roseTree) {
+    console.log(roseTree)
     return new Zipper(roseTree);
   }
 
@@ -46,15 +47,25 @@ export class Zipper {
   }
 
   up() {
-    throw new Error('Remove this statement and implement this function');
+    if(this.breadcrumbs.length === 0) {
+      return null;
+    }
+    console.log(this.breadcrumbs);
+    const newCrumbs = this.breadcrumbs;
+    newCrumbs.pop();
+    return new Zipper(this.tree, newCrumbs);
   }
 
-  setValue() {
-    throw new Error('Remove this statement and implement this function');
+  setValue(value) {
+    let focus = this.getFocus();
+    focus.value = value;
+    return new Zipper(this.tree, this.breadcrumbs);
   }
 
-  setLeft() {
-    throw new Error('Remove this statement and implement this function');
+  setLeft(leaf) {
+    let focus = this.getFocus();
+    focus.left = leaf;
+    return new Zipper(this.tree, this.breadcrumbs);    
   }
 
   setRight() {
