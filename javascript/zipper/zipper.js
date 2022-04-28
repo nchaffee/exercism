@@ -1,11 +1,10 @@
 export class Zipper {
   constructor(tree, breadcrumbs = []) {
     this.breadcrumbs = breadcrumbs;
-    this.tree = tree;
+    this.tree = JSON.parse(JSON.stringify(tree));;
   }
 
   static fromTree(roseTree) {
-    console.log(roseTree)
     return new Zipper(roseTree);
   }
 
@@ -68,7 +67,9 @@ export class Zipper {
     return new Zipper(this.tree, this.breadcrumbs);    
   }
 
-  setRight() {
-    throw new Error('Remove this statement and implement this function');
+  setRight(leaf) {
+    let focus = this.getFocus();
+    focus.right = leaf;
+    return new Zipper(this.tree, this.breadcrumbs);    
   }
 }
