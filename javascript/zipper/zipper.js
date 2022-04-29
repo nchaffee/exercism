@@ -1,74 +1,52 @@
 export class Zipper {
-  constructor(tree, breadcrumbs = []) {
+  constructor(tree, breadcrumbs) {
     this.breadcrumbs = breadcrumbs;
     this.tree = tree;
   }
 
-  static fromTree(roseTree) {
-    return new Zipper(JSON.parse(JSON.stringify(roseTree)));
+  static fromTree(roseTree, breadcrumbs = []) {
+    return new Zipper(JSON.parse(JSON.stringify(roseTree)), breadcrumbs);
   }
 
   getFocus() {
-    let focus = this.tree;
-    this.breadcrumbs.forEach(crumb => {
-     focus = focus[crumb]
-    });
-    return focus;
+    return this.breadcrumbs.reduce((tree, crumb) => {
+       return tree[crumb]
+    }, this.tree);
   };
 
-  toTree() {
-    return this.tree;
-  }
+  toTree() { return this.tree; }
 
-  value() {
-    let focus = this.getFocus();
-    return focus.value;
-  }
+  value() { return this.getFocus().value; }
 
   left() {
-    let focus = this.getFocus();
-    if(focus.left === null) {
-      return null
-    }
-    const newCrumbs = [...this.breadcrumbs]
-    newCrumbs.push('left');
-    return new Zipper(JSON.parse(JSON.stringify(this.tree)), newCrumbs);
+    if(this.getFocus().left === null) { return null }
+    return Zipper.fromTree(this.tree, [...this.breadcrumbs, 'left']);
   }
 
   right() {
-    let focus = this.getFocus();
-    if(focus.right === null) {
-      return null
-    }
-    const newCrumbs = [...this.breadcrumbs]
-    newCrumbs.push('right');
-    return new Zipper(JSON.parse(JSON.stringify(this.tree)), newCrumbs);
+    if(this.getFocus().right === null) { return null }
+    return Zipper.fromTree(this.tree, [...this.breadcrumbs, 'right']);
   }
 
   up() {
-    if(this.breadcrumbs.length === 0) {
-      return null;
-    }
+    if(this.breadcrumbs.length === 0) { return null; }
     const newCrumbs = [...this.breadcrumbs];
     newCrumbs.pop();
-    return new Zipper(JSON.parse(JSON.stringify(this.tree)), newCrumbs);
+    return Zipper.fromTree(this.tree, newCrumbs);
   }
 
   setValue(value) {
-    let focus = this.getFocus();
-    focus.value = value;
-    return new Zipper(JSON.parse(JSON.stringify(this.tree)), this.breadcrumbs);
+    this.getFocus().value = value;
+    return Zipper.fromTree(this.tree, this.breadcrumbs);
   }
 
   setLeft(leaf) {
-    let focus = this.getFocus();
-    focus.left = leaf;
-    return new Zipper(JSON.parse(JSON.stringify(this.tree)), this.breadcrumbs);    
+    this.getFocus().left = leaf;
+    return Zipper.fromTree(this.tree, this.breadcrumbs);    
   }
 
   setRight(leaf) {
-    let focus = this.getFocus();
-    focus.right = leaf;
-    return new Zipper(JSON.parse(JSON.stringify(this.tree)), this.breadcrumbs);    
+    this.getFocus().right = leaf;
+    return Zipper.fromTree(this.tree, this.breadcrumbs);    
   }
 }
