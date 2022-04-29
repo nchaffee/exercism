@@ -12,7 +12,7 @@ function leaf(value) {
 }
 
 describe('Zipper', () => {
-  let t1;
+  const t1 = bt(1, bt(2, null, leaf(3)), leaf(4));
   const t2 = bt(1, bt(5, null, leaf(3)), leaf(4));
   const t3 = bt(1, bt(2, leaf(5), leaf(3)), leaf(4));
   const t4 = bt(1, leaf(2), leaf(4));
@@ -21,7 +21,6 @@ describe('Zipper', () => {
   let zipper;
   
   beforeEach(() => {
-    t1 = bt(1, bt(2, null, leaf(3)), leaf(4));
     zipper = Zipper.fromTree(t1);
   });
 
@@ -58,9 +57,6 @@ describe('Zipper', () => {
   });
 
   test('setLeft with leaf', () => {
-    console.log('xxxxxxxxx')
-    console.log(t1)
-    console.log(zipper)
     expect(zipper.left().setLeft(leaf(5)).toTree()).toEqual(t3);
   });
 
