@@ -1,18 +1,10 @@
-const points = [
-  [/[aeioulnrst]/gi, '+1'],
-  [/[dg]/gi, '+2'],
-  [/[bcmp]/gi, '+3'],
-  [/[fhvwy]/gi, '+4'],
-  [/[k]/gi, '+5'],
-  [/[jx]/gi, '+8'],
-  [/[qz]/gi, '+10'],
-]
-
-export const score = (word) => {
-  let regex, pts;
-  points.forEach((regexNPts) => {
-    [regex, pts] = regexNPts
-    word = word.replace(regex,pts)
-  })
-  return eval(word + '+0')
-};
+export function score(word,sc){
+  word = word.toUpperCase();
+  var map = { 1: 'AEIOULNRST', 2: 'DG', 3: 'BCMP', 4: 'FHVWY', 5: 'K', 8: 'JX', 10: 'QZ' };
+  return word.split('').reduce((total, letter) => {
+    for(let pts in map) {
+      if(map[pts].indexOf(letter) > -1) { total += Number(pts) }
+    }
+    return total
+  }, 0)
+}
