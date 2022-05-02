@@ -1,26 +1,18 @@
-const points = {
-  D: 2,
-  G: 2,
-  B: 3,
-  C: 3,
-  M: 3,
-  P: 3,
-  F: 4,
-  H: 4,
-  V: 4,
-  W: 4,
-  Y: 4,
-  K: 5,                                  
-  J: 8,
-  X: 8,
-  Q: 10,
-  Z: 10
-}
-
-const sum = (a,b) => a+b
+const points = [
+  [/[aeioulnrst]/gi, '+1'],
+  [/[dg]/gi, '+2'],
+  [/[bcmp]/gi, '+3'],
+  [/[fhvwy]/gi, '+4'],
+  [/[k]/gi, '+5'],
+  [/[jx]/gi, '+8'],
+  [/[qz]/gi, '+10'],
+]
 
 export const score = (word) => {
-  return [...(word.toUpperCase())].
-    map((letter) => points[letter] || 1).
-    reduce(((a,b) => sum(a,b)), 0);
+  let regex, pts;
+  points.forEach((regexNPts) => {
+    [regex, pts] = regexNPts
+    word = word.replace(regex,pts)
+  })
+  return eval(word + '+0')
 };
