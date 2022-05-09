@@ -1,18 +1,15 @@
-const primeNumbers = [2,3,5,7,11,13,17]
+const primes = [2,3,5,7,11,13,17]
 
 export const squareRoot = (radicand) => {
-  let remaining = radicand;
-  let primeFactors = []
-  let result = 1;
+  let [remaining,factors,result] = [radicand, [], 1]
 
   while (remaining > 1) {
-    const primeFactor = primeNumbers.find(prime => remaining % prime === 0)
-    remaining /= primeFactor;
-    if (primeFactors.includes(primeFactor)) {
-      result *= primeFactor;
-      primeFactors.splice(primeFactors.indexOf(primeFactor))
+    const factor = primes.find(prime => remaining % prime === 0)
+    remaining /= factor;
+    if (factors.includes(factor)) {
+      result *= factors.splice(factors.indexOf(factor))[0];
     } else {
-      primeFactors.push(primeFactor);
+      factors.push(factor);
     }
   }
   return result;
